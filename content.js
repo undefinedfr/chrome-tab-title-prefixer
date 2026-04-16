@@ -1,42 +1,112 @@
 (() => {
-  // hostname to check
-  if (!location.hostname.includes(".localhost") && !location.hostname.includes(".local")) return;
+  let activePrefixes = [];
+  let titleObserver = null;
+  let headObserver = null;
 
-  const PREFIX = "🟢 ";
+  const combine = (arr) => arr.join("");
 
-  const applyPrefix = () => {
+  const computePrefixes = (conditions, hostname) => {
+    if (!Array.isArray(conditions)) return [];
+    return conditions
+      .filter((c) => c && c.enabled !== false)
+      .filter(
+        (c) =>
+          Array.isArray(c.patterns) &&
+          c.patterns.some(
+            (p) => typeof p === "string" && p !== "" && hostname.includes(p)
+          )
+      )
+      .map((c) => (typeof c.prefix === "string" ? c.prefix : ""))
+      .filter((p) => p !== "");
+  };
+
+  const applyCurrent = () => {
+    const combined = combine(activePrefixes);
+    if (!combined) return;
     const current = document.title || "";
-    if (!current.startsWith(PREFIX)) {
-      document.title = PREFIX + current;
-    }
+    if (current.startsWith(combined)) return;
+    document.title = combined + current;
   };
 
-  // Applique dès que <title> existe
-  const waitForTitle = () => {
+  const observeTitle = () => {
     const titleEl = document.querySelector("head > title");
-    if (titleEl) {
-      applyPrefix();
-      // Observe les changements de titre (SPA, frameworks qui le modifient)
-      new MutationObserver(applyPrefix).observe(titleEl, {
-        childList: true,
-        characterData: true,
-        subtree: true,
-      });
-    } else {
-      // <title> pas encore présent, on attend qu'il soit ajouté au <head>
-      const headObserver = new MutationObserver(() => {
-        const t = document.querySelector("head > title");
-        if (t) {
-          headObserver.disconnect();
-          waitForTitle();
-        }
-      });
-      headObserver.observe(document.documentElement, {
-        childList: true,
-        subtree: true,
-      });
+    if (!titleEl) return false;
+    if (titleObserver) titleObserver.disconnect();
+    titleObserver = new MutationObserver(applyCurrent);
+    titleObserver.observe(titleEl, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
+    return true;
+  };
+
+  const waitForTitle = () => {
+    if (observeTitle()) {
+      applyCurrent();
+      return;
+    }
+    if (headObserver) headObserver.disconnect();
+    headObserver = new MutationObserver(() => {
+      if (observeTitle()) {
+        headObserver.disconnect();
+        headObserver = null;
+        applyCurrent();
+      }
+    });
+    headObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+  };
+
+  const stopObservers = () => {
+    if (titleObserver) {
+      titleObserver.disconnect();
+      titleObserver = null;
+    }
+    if (headObserver) {
+      headObserver.disconnect();
+      headObserver = null;
     }
   };
 
-  waitForTitle();
+  const replacePrefixes = (oldPrefixes, newPrefixes) => {
+    const current = document.title || "";
+    const oldCombined = combine(oldPrefixes);
+    const newCombined = combine(newPrefixes);
+    let clean = current;
+    if (oldCombined && clean.startsWith(oldCombined)) {
+      clean = clean.slice(oldCombined.length);
+    }
+    const next = newCombined + clean;
+    if (document.title !== next) document.title = next;
+  };
+
+  const init = async () => {
+    try {
+      const { conditions } = await chrome.storage.sync.get("conditions");
+      activePrefixes = computePrefixes(conditions, location.hostname);
+    } catch {
+      activePrefixes = [];
+    }
+    if (activePrefixes.length > 0) waitForTitle();
+  };
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "sync" || !changes.conditions) return;
+    const oldPrefixes = activePrefixes;
+    activePrefixes = computePrefixes(
+      changes.conditions.newValue,
+      location.hostname
+    );
+    replacePrefixes(oldPrefixes, activePrefixes);
+    if (activePrefixes.length > 0 && !titleObserver) {
+      waitForTitle();
+    } else if (activePrefixes.length === 0) {
+      stopObservers();
+    }
+  });
+
+  init();
 })();

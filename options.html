@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Localhost Title Prefix — Configuration</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Localhost Title Prefix</h1>
+      <p>
+        Ajoute un préfixe au <code>&lt;title&gt;</code> des pages selon des
+        règles sur le hostname. Une condition s'applique si le hostname contient
+        <em>au moins un</em> des motifs.
+      </p>
+    </header>
+
+    <main>
+      <div class="toolbar">
+        <button id="add-condition" type="button">+ Ajouter une condition</button>
+        <span id="status" class="status" aria-live="polite"></span>
+      </div>
+
+      <ul id="conditions" class="conditions"></ul>
+
+      <p id="empty" class="empty" hidden>
+        Aucune condition. Cliquez sur « Ajouter une condition » pour commencer.
+      </p>
+    </main>
+
+    <template id="condition-template">
+      <li class="condition">
+        <div class="condition-header">
+          <label class="toggle">
+            <input type="checkbox" class="condition-enabled" checked />
+            <span>Activée</span>
+          </label>
+          <button type="button" class="delete-condition" title="Supprimer la condition">
+            ✕
+          </button>
+        </div>
+        <div class="field">
+          <label>Nom</label>
+          <input type="text" class="condition-name" placeholder="Local dev" />
+        </div>
+        <div class="field">
+          <label>Préfixe</label>
+          <input type="text" class="condition-prefix" placeholder="🟢 " />
+        </div>
+        <div class="field">
+          <label>Si le hostname contient :</label>
+          <ul class="patterns"></ul>
+          <button type="button" class="add-pattern">+ Ajouter un motif</button>
+        </div>
+      </li>
+    </template>
+
+    <template id="pattern-template">
+      <li class="pattern">
+        <input type="text" class="pattern-value" placeholder=".localhost" />
+        <button type="button" class="delete-pattern" title="Supprimer le motif">
+          ✕
+        </button>
+      </li>
+    </template>
+
+    <script src="options.js"></script>
+  </body>
+</html>
