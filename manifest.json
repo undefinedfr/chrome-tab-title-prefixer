@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Localhost Title Prefix (dev)",
+  "name": "Tab Title Prefixer",
   "version": "1.1.0",
   "description": "Prepends configurable prefixes to page <title> based on hostname rules.",
   "permissions": ["storage"],
@@ -20,6 +20,6 @@
     "open_in_tab": true
   },
   "action": {
-    "default_title": "Localhost Title Prefix — settings"
+    "default_title": "Tab Title Prefixer — settings"
   }
 }

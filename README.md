@@ -1,4 +1,4 @@
-# Localhost Title Prefix
+# Tab Title Prefixer
 
 Chrome extension (Manifest V3) that prepends a configurable prefix to the `<title>` of tabs whose hostname matches user-defined rules. Handy for spotting a dev tab at a glance among a stack of production tabs.
 
@@ -18,7 +18,7 @@ Example: on `app.localhost`, the title `My App` becomes `🟢 My App`.
 
 1. Clone the repo:
    ```bash
-   git clone git@github.com:undefinedfr/chrome-localhost-checker.git
+   git clone git@github.com:undefinedfr/chrome-tab-title-prefixer.git
    ```
 2. Open Chrome and go to `chrome://extensions`.
 3. Enable **Developer mode** (top-right).
