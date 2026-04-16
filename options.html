@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Localhost Title Prefix — Configuration</title>
+    <title>Localhost Title Prefix — Settings</title>
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
     <header>
       <h1>Localhost Title Prefix</h1>
       <p>
-        Ajoute un préfixe au <code>&lt;title&gt;</code> des pages selon des
-        règles sur le hostname. Une condition s'applique si le hostname contient
-        <em>au moins un</em> des motifs.
+        Prepends a prefix to the page <code>&lt;title&gt;</code> based on
+        hostname rules. A condition applies if the hostname contains
+        <em>at least one</em> of its patterns.
       </p>
     </header>
 
     <main>
       <div class="toolbar">
-        <button id="add-condition" type="button">+ Ajouter une condition</button>
+        <button id="add-condition" type="button">+ Add condition</button>
         <span id="status" class="status" aria-live="polite"></span>
       </div>
 
       <ul id="conditions" class="conditions"></ul>
 
       <p id="empty" class="empty" hidden>
-        Aucune condition. Cliquez sur « Ajouter une condition » pour commencer.
+        No conditions yet. Click "Add condition" to get started.
       </p>
     </main>
 
@@ -33,24 +33,24 @@
         <div class="condition-header">
           <label class="toggle">
             <input type="checkbox" class="condition-enabled" checked />
-            <span>Activée</span>
+            <span>Enabled</span>
           </label>
-          <button type="button" class="delete-condition" title="Supprimer la condition">
+          <button type="button" class="delete-condition" title="Delete condition">
             ✕
           </button>
         </div>
         <div class="field">
-          <label>Nom</label>
+          <label>Name</label>
           <input type="text" class="condition-name" placeholder="Local dev" />
         </div>
         <div class="field">
-          <label>Préfixe</label>
+          <label>Prefix</label>
           <input type="text" class="condition-prefix" placeholder="🟢 " />
         </div>
         <div class="field">
-          <label>Si le hostname contient :</label>
+          <label>If the hostname contains:</label>
           <ul class="patterns"></ul>
-          <button type="button" class="add-pattern">+ Ajouter un motif</button>
+          <button type="button" class="add-pattern">+ Add pattern</button>
         </div>
       </li>
     </template>
@@ -58,7 +58,7 @@
     <template id="pattern-template">
       <li class="pattern">
         <input type="text" class="pattern-value" placeholder=".localhost" />
-        <button type="button" class="delete-pattern" title="Supprimer le motif">
+        <button type="button" class="delete-pattern" title="Delete pattern">
           ✕
         </button>
       </li>

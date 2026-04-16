@@ -41,7 +41,7 @@ function save() {
   saveTimer = setTimeout(() => {
     chrome.storage.sync
       .set({ conditions: state.conditions })
-      .then(() => flashStatus("Enregistré"));
+      .then(() => flashStatus("Saved"));
   }, 200);
 }
 
